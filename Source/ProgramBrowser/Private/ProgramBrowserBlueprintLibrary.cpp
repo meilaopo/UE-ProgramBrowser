@@ -39,13 +39,12 @@ bool UProgramBrowserBlueprintLibrary::RunUBT(const FString& Commandline)
 
 void UProgramBrowserBlueprintLibrary::GetProgramAdditionalDependenciesDirs(TArray<FString>& DependenciesDirs)
 {
-	// DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Slate\\Common")));
-	// DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Slate\\Old")));
-	// DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Editor\\Slate\\Icons")));
+
 	DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Slate")));
-	DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Editor")));
+	DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("SlateDebug")));
+	DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("SlateFileDialogs")));
+	//DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Editor")));
 	
-	DependenciesDirs.Add(FPaths::Combine(FPaths::EngineContentDir(), TEXT("Internationalization")));
 	DependenciesDirs.Add(FPaths::Combine(FPaths::EngineDir(), TEXT("Shaders\\StandaloneRenderer")));
 }
 
@@ -58,12 +57,12 @@ void UProgramBrowserBlueprintLibrary::StageProgram(const FString& ProgramName, c
 	ExeDependencies.Add(TEXT("tbb.dll"));
 	ExeDependencies.Add(TEXT("tbbmalloc.dll"));
 	ExeDependencies.Add(FString::Printf(TEXT("%s.exe"), *ProgramTargetName));
-	ExeDependencies.Add(FString::Printf(TEXT("%s.pdb"), *ProgramTargetName));
+	//ExeDependencies.Add(FString::Printf(TEXT("%s.pdb"), *ProgramTargetName));
 
 	FString Dest = FPaths::Combine(StageDir, TEXT("Engine\\Binaries\\Win64"));
 	for (FString& Dependency : ExeDependencies)
 	{
-		IFileManager::Get().Copy(*(Dest / Dependency), *FPaths::Combine(FPaths::EngineDir(), TEXT("Binaries\\Win64"), Dependency));
+		IFileManager::Get().Copy(*(Dest / Dependency), *FPaths::Combine(FPaths::ProjectDir(), TEXT("Binaries\\Win64"), Dependency));
 	}
 	IFileManager::Get().Move(*FPaths::Combine(StageDir, TEXT("Engine\\Content\\Paks"), ProgramName + TEXT(".pak")), *ProgramPakFile);
 
@@ -119,12 +118,12 @@ bool UProgramBrowserBlueprintLibrary::GetIcoData(const FString& IcoPath, TArray<
 	Writer << IconDirEntry->bWidth;
 	Writer << IconDirEntry->bHeight;
 	Writer << IconDirEntry->bColorCount;
-	byte Zero = 0;
+	uint8 Zero = 0;
 	Writer << Zero;
 	Writer << IconDirEntry->wPlanes;
 	Writer << IconDirEntry->wBitCount;
 	Writer << IconDirEntry->dwBytesInRes;
-	USHORT Index = 1;
+	uint16 Index = 1;
 	Writer << Index;
 
 	return true;

@@ -52,7 +52,7 @@ void FProgramBrowserModule::InitilizeBrowserData()
 {
 	PluginDir           = IPluginManager::Get().FindPlugin("ProgramBrowser")->GetBaseDir();
 	ProgramTemplatesDir = PluginDir / TEXT("Templates");
-	ProgramsDir         = FPaths::EngineSourceDir() / TEXT("Programs/Programs_Collection");
+	ProgramsDir         = FPaths::GameSourceDir() / TEXT("Programs");
 	
 	if (!FPaths::DirectoryExists(ProgramsDir))
 	{

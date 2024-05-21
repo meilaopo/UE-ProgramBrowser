@@ -12,7 +12,9 @@ public class PROGRAM_NAMETarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		LinkType = TargetLinkType.Monolithic;
 		LaunchModuleName = "PROGRAM_NAME";
-
+		
+		SolutionDirectory = "Games";
+		
 		// Lean and mean
 		bBuildDeveloperTools = false;
 

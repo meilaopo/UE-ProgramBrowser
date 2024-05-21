@@ -2,8 +2,10 @@
 
 #include "CoreMinimal.h"
 
+#if PLATFORM_WINDOWS
 #include <windows.h>
 #include <tchar.h>
+#endif
 #include <stdio.h>
 
 /**
@@ -20,5 +22,8 @@ public:
     bool SetIcon(TArray<uint8>& GroupData, TArray<uint8>& IcoData);
 
 private:
+
+#if PLATFORM_WINDOWS
     HANDLE Handle = nullptr;
+#endif
 };

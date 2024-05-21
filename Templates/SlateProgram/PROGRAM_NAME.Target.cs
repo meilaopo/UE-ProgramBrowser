@@ -10,7 +10,9 @@ public class PROGRAM_NAMETarget : TargetRules
 	{
 		Type = TargetType.Program;
 		LinkType = TargetLinkType.Monolithic;
-
+		
+		SolutionDirectory = "Games";
+		
 		LaunchModuleName = "PROGRAM_NAME";
 		if (bBuildEditor)
 		{
@@ -28,6 +30,8 @@ public class PROGRAM_NAMETarget : TargetRules
 		// PROGRAM_NAME.exe has no exports, so no need to verify that a .lib and .exp file was emitted by
 		// the linker.
 		bHasExports = false;
+
+		bCompileICU = false;
 
 		// Make sure to get all code in SlateEditorStyle compiled in
         bBuildDeveloperTools = true;

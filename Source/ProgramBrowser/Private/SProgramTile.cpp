@@ -298,12 +298,15 @@ bool SProgramTile::BuildProgramCommand()
     FString BuildCommandline;
     FString Configuration = ConfigurationText.ToString();
     FString OutputMessage;
+    
+    FString ProjectFile = FPaths::GetProjectFilePath();
 
+    BuildCommandline += ProjectFile + TEXT(" ");
 
     BuildCommandline += Program->Name.ToString() + TEXT(" ");
     BuildCommandline += TEXT("Win64 ");
-    BuildCommandline += Configuration;
-            
+    BuildCommandline += Configuration;        
+
     bool BuildRes = UProgramBrowserBlueprintLibrary::RunUBT(BuildCommandline);
 
     UE_LOG(LogTemp, Display, TEXT("=================== Build Program %s End. ==================="), *Program->Name.ToString());
@@ -334,7 +337,7 @@ bool SProgramTile::PackageProgramCommand()
         ProgramTargetName = Program->Name.ToString();
     }
 
-    FString ReceiptPath = FPaths::Combine(FPaths::EngineDir(), TEXT("Binaries\\Win64"), ProgramTargetName + TEXT(".target"));
+    FString ReceiptPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("Binaries\\Win64"), ProgramTargetName + TEXT(".target"));
     FTargetReceipt Receipt;
     if(!Receipt.Read(ReceiptPath))
     {
@@ -342,11 +345,18 @@ bool SProgramTile::PackageProgramCommand()
         return false;
     }
 
-    for (const FRuntimeDependency& Dependency : Receipt.RuntimeDependencies)
-    {
-        FString DependencyRelPath = Dependency.Path;
-        PakCommandsList.Add(FString::Printf(TEXT("\"%s\" \"%s\" -compress"), *FPaths::ConvertRelativePathToFull(DependencyRelPath), *DependencyRelPath));
-    }
+    
+	/* for (const FRuntimeDependency& Dependency : Receipt.RuntimeDependencies)
+	 {
+		 FString DependencyRelPath = Dependency.Path;
+
+		 if (DependencyRelPath.EndsWith(".dll") || DependencyRelPath.EndsWith(".pdb"))
+		 {
+			 continue;
+		 }
+
+		 PakCommandsList.Add(FString::Printf(TEXT("\"%s\" \"%s\" -compress"), *FPaths::ConvertRelativePathToFull(DependencyRelPath), *DependencyRelPath));
+	 }*/
 
     TArray<FString> AdditionalDependicesFiles;
     UProgramBrowserBlueprintLibrary::GetProgramAdditionalDependenciesDirs(AdditionalDependicesFiles);
@@ -356,6 +366,11 @@ bool SProgramTile::PackageProgramCommand()
         IFileManager::Get().FindFilesRecursive(AdditionalFiles, *Dir, TEXT("*.*"), true, false, false);
         for (FString& Filepath : AdditionalFiles)
         {
+            if (Filepath.EndsWith(".dll") || Filepath.EndsWith(".pdb"))
+            {
+                continue;
+            }
+
             PakCommandsList.Add(FString::Printf(TEXT("\"%s\" \"%s\" -compress"), *FPaths::ConvertRelativePathToFull(Filepath), *Filepath));
         }
     }
